@@ -46,3 +46,7 @@ app.post("/urls", (req, res) => {
   res.send("Ok");         // Respond with 'Ok' (we will replace this)
 });
 
+function generateRandomString () {
+  let randomString = Math.random().toString(36).slice(-6);
+    return randomString;
+}
