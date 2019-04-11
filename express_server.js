@@ -21,13 +21,21 @@ app.get("/urls/new", (req, res) => {
 });
 
 app.get("/urls/:shortURL", (req, res) => {
-  let templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL] };
+  let templateVars = {
+    shortURL: req.params.shortURL,
+    longURL: urlDatabase[req.params.shortURL] };
   res.render("urls_show", templateVars);
 });
 
 app.get("/urls", (req, res) => {
-  let templateVars = { urls: urlDatabase };
+  let templateVars = {
+    urls: urlDatabase };
   res.render("urls_index", templateVars);
+});
+
+app.get("/u/:shortURL", (req, res) => {
+  const longURL = req.body.longURL;
+  res.redirect(longURL);
 });
 
 app.listen(PORT, () => {
@@ -40,7 +48,7 @@ app.post("/urls", (req, res) => {
   console.log(shortURL);
   console.log(req.body.longURL)
   urlDatabase[shortURL] = req.body.longURL
-  res.redirect("/urls");         // Respond with 'Ok' (we will replace this)
+  res.redirect(`/urls/${shortURL}`);
 });
 
 function generateRandomString () {
