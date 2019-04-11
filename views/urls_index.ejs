@@ -1,16 +1,20 @@
 <% include ./partials/_header %>
 
 <html>
-<body style="font-size:20px; padding:50px;">
-  <h1>TinyApp</h1>
-  <a href="/urls/new"> Create New TinyURL </a>
-  <br>
-  <br>
-  <p><strong>My URLs</strong></p>
-<% for (let key in urls) { %>
-<li> <%= key %>: <%= urls[key] %></li>
-<form action="/urls/ <%= key %>/delete" method="POST">
-    <button type="submit"> Delete </button>
-<% } %>
-</body>
+  <body style="font-size:20px; padding:50px;">
+    <h1>TinyApp</h1>
+    <a href="/urls/new"> Create New TinyURL </a>
+    <br>
+    <br>
+    <p><strong>My URLs</strong></p>
+    <% for (let key in urls) { %>
+      <form method="POST" action="/urls/<%= key %>/delete" >
+      <li> <%= key %>: <%= urls[key] %></li>
+      <button type="submit" class="btn btn-primary"> Delete </button>
+      <a href='/urls/<%= key %>'> Edit</a>
+      </form>
+
+    <% } %>
+  </body>
 </html>
+

@@ -26,15 +26,13 @@ app.get("/urls/new", (req, res) => {
 });
 // creates new custom shortURL for given longURL
 app.post("/urls", (req, res) => {
-  console.log(req.body);
   let shortURL = generateRandomString();
-  console.log(shortURL);
-  console.log(req.body.longURL)
-  urlDatabase[shortURL] = req.body.longURL
-  longURL = req.body.longURL
-  console.log("i am four")
+    urlDatabase[shortURL] = req.body.longURL
+    longURL = req.body.longURL
+    console.log("i am four")
   res.redirect(`/urls/${shortURL}`);
 });
+
 // will read anything in browser urls/""/ and make a href link out of it
 app.get("/urls/:shortURL", (req, res) => {
   let templateVars = {
@@ -44,15 +42,27 @@ app.get("/urls/:shortURL", (req, res) => {
   res.render("urls_show", templateVars);
 });
 
-// app.get("/urls.json", (req, res) => {
-//   res.json(urlDatabase);
-// });
 // redirects shortURL links to longURL page
 app.get("/u/:shortURL", (req, res) => {
   const longURL = urlDatabase[req.params.shortURL];
   console.log("i am three");
   console.log(longURL);
   res.redirect(longURL);
+});
+
+// deletes a URL from database
+app.post("/urls/:shortURL/delete", (req, res) => {
+  const shortURL = req.params.shortURL;
+  delete urlDatabase[shortURL];
+  res.redirect("/urls");
+});
+
+// updates URL from database
+app.post("/urls/:shortURL", (req, res) => {
+ const shortURL = req.params.shortURL;
+ const newURL = req.body.name;
+ urlDatabase[shortURL] = newURL;
+ res.redirect("/urls");
 });
 
 app.listen(PORT, () => {
