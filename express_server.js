@@ -17,14 +17,16 @@ const urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com"
 };
-const Users = {
-  "username": {
-    "username": "username",
-    "password": "password"
+const users = {
+  "userRandomID": {
+    id: "userRandomID",
+    email: "user@example.com",
+    password: "purple-monkey-dinosaur"
   },
-  "username2": {
-    "username": "username2",
-    "password": "password2"
+ "user2RandomID": {
+    id: "user2RandomID",
+    email: "user2@example.com",
+    password: "dishwasher-funk"
   }
 }
 
@@ -43,14 +45,6 @@ app.get("/urls/new", (req, res) => {
     username: req.cookies["username"],
   }
   res.render("urls_new", templateVars);
-});
-
-// creates new custom shortURL for given longURL
-app.post("/urls", (req, res) => {
-  let shortURL = generateRandomString();
-  urlDatabase[shortURL] = req.body.longURL
-  longURL = req.body.longURL
-  res.redirect(`/urls/${shortURL}`);
 });
 
 // will read anything in browser urls/""/ and make a href link out of it
@@ -81,6 +75,15 @@ app.get("/register", (req, res) => {
   };
   res.render("register", templateVars);
 });
+
+// creates new custom shortURL for given longURL
+app.post("/urls", (req, res) => {
+  let shortURL = generateRandomString();
+  urlDatabase[shortURL] = req.body.longURL
+  longURL = req.body.longURL
+  res.redirect(`/urls/${shortURL}`);
+});
+
 // deletes a URL from database
 app.post("/urls/:shortURL/delete", (req, res) => {
   const shortURL = req.params.shortURL;
@@ -98,19 +101,31 @@ app.post("/urls/:shortURL", (req, res) => {
 
 // username login
 app.post("/login", (req, res) => {
-  if (Users[req.body.username]) {
-    if (Users[req.body.username].password=== req.body.password) {
+  if (users[req.body.username]) {
+    if (users[req.body.username].password=== req.body.password) {
       res.cookie("username", req.body.username);
       res.redirect("/urls")
-    } else if (Users[req.body.username].password !== req.body.password) {
+    } else if (users[req.body.username].password !== req.body.password) {
       res.redirect("/login")
     }
-  } else if (Users[req.body.username] !== req.body.username) {
+  } else if (users[req.body.username] !== req.body.username) {
     res.redirect("/register")
   }
 });
-app.post("/register", (req, res) => {
 
+// Register New User/ Create Custom ID
+app.post("/register", (req, res) => {
+  let newID = generateRandomString();
+
+
+
+  users[newID] = {
+    id : newID,
+    email : "",
+    password : "",
+  };
+  console.log(users);
+  res.redirect("/urls");
 });
 
 app.post("/logout", (req, res) => {
