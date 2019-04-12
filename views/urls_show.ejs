@@ -1,14 +1,16 @@
 <% include ./partials/_header %>
-<body style="font-size:20px; padding:50px;">
+<html>
+  <body style="font-size:20px; padding:50px;">
   <h1>TinyApp</h1>
-  <form action="/urls/<%= shortURL %>" method="POST">
-  <a href="/urls/new"> Create New TinyURL </a>
-  <br>
-  <br>
-  <p><strong>ShortURL : <a href= <%= shortURL %> > <%= shortURL %> </a></strong></p>
-    <input type="text" placeholder="name" name="name">
-    <button type="submit">Update</button>
-</form>
-  <!-- <p> <%= shortURL %> </p> -->
-</body>
+    <form action="/urls/<%= shortURL %>" method="POST">
+      <a href="/urls/new"> Create New TinyURL </a>
+      <br>
+      <br>
+      <!-- URL Update -->
+      <p><strong>ShortURL : <a href= <%= longURL %> > <%= shortURL %> </a></strong></p>
+      <input type="text" placeholder="New URL: http://" name="name">
+      <button type="submit">Update</button>
+
+    </form>
+  </body>
 </html>
