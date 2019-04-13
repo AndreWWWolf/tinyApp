@@ -63,12 +63,14 @@ app.get("/u/:shortURL", (req, res) => {
   res.redirect(longURL);
 });
 
+// persists cookies onto login page
 app.get("/login", (req, res) => {
   let templateVars = {
     username: req.cookies["username"],
   };
   res.render("login", templateVars);
 });
+// persists cookies onto register page
 app.get("/register", (req, res) => {
   let templateVars = {
     username: req.cookies["username"],
@@ -90,7 +92,6 @@ app.post("/urls/:shortURL/delete", (req, res) => {
   delete urlDatabase[shortURL];
   res.redirect("/urls");
 });
-
 // updates URL from database
 app.post("/urls/:shortURL", (req, res) => {
  const shortURL = req.params.shortURL;
@@ -115,19 +116,30 @@ app.post("/login", (req, res) => {
 
 // Register New User/ Create Custom ID
 app.post("/register", (req, res) => {
-  let newID = generateRandomString();
+  if (req.body.username === "") {
+    res.status(400);
+    res.send('dont try me');
+  } else if (req.body.password === "") {
+    res.status(400);
+    res.send('dont try me');
+  } else if (matchEmail(req.body.username)) {
+      res.send('email address exists');
+  } else {
+    let newID = generateRandomString();
+    users[newID] = {
+      id : newID,
+      email : req.body.username,
+      password : req.body.password,
+    };
+    console.log(users);
 
-
-
-  users[newID] = {
-    id : newID,
-    email : "",
-    password : "",
-  };
-  console.log(users);
-  res.redirect("/urls");
+    res.cookie("userID", newID);
+    // console.log(users);
+    res.redirect("/urls");
+  }
 });
 
+// Logout
 app.post("/logout", (req, res) => {
   res.clearCookie("username");
   res.redirect("/urls")
@@ -139,6 +151,18 @@ app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
 
+// Email finder function
+function matchEmail (email) {
+  for (let id in users) {
+    let user = users[id];
+    console.log(user);
+    console.log(email);
+    if (user.email === email){
+      return true;
+    }
+  }
+  return false;
+}
 
 function generateRandomString () {
   let randomString = Math.random().toString(36).slice(-6);
