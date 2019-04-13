@@ -11,8 +11,8 @@
       <input type="text" placeholder="User Name" name="username">
       <button type="submit"> Login </button> -->
       <!-- Username Display -->
-      <% if (username) { %>
-      <p>Logged in as: <%= username %> </p>
+      <% if (userID) { %>
+      <p>Logged in as: <%= userID.email %> </p>
       <form method="POST" action="/logout">
       <button type="submit"> Logout </button>
       </form>

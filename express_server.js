@@ -34,7 +34,7 @@ const users = {
 app.get("/urls", (req, res) => {
   let templateVars = {
     urls: urlDatabase,
-    username: req.cookies["username"],
+    userID: users[req.cookies["userID"]],
   };
   res.render("urls_index", templateVars);
 });
@@ -42,8 +42,9 @@ app.get("/urls", (req, res) => {
 // create new login URL page
 app.get("/urls/new", (req, res) => {
   let templateVars = {
-    username: req.cookies["username"],
+    userID: users[req.cookies["userID"]],
   }
+  console.log(users[req.cookies['userID']]);
   res.render("urls_new", templateVars);
 });
 
@@ -52,7 +53,7 @@ app.get("/urls/:shortURL", (req, res) => {
   let templateVars = {
     shortURL: req.params.shortURL,
     longURL: urlDatabase[req.params.shortURL],
-    username: req.cookies["username"],
+    userID: users[req.cookies["userID"]],
   };
   res.render("urls_show", templateVars);
 });
@@ -66,14 +67,14 @@ app.get("/u/:shortURL", (req, res) => {
 // persists cookies onto login page
 app.get("/login", (req, res) => {
   let templateVars = {
-    username: req.cookies["username"],
+    userID: users[req.cookies["userID"]],
   };
   res.render("login", templateVars);
 });
 // persists cookies onto register page
 app.get("/register", (req, res) => {
   let templateVars = {
-    username: req.cookies["username"],
+    userID: users[req.cookies["userID"]],
   };
   res.render("register", templateVars);
 });
@@ -100,48 +101,46 @@ app.post("/urls/:shortURL", (req, res) => {
  res.redirect("/urls");
 });
 
-// username login
+// userID login
 app.post("/login", (req, res) => {
-  if (users[req.body.username]) {
-    if (users[req.body.username].password=== req.body.password) {
-      res.cookie("username", req.body.username);
+  if (users[req.body.userID]) {
+    if (users[req.body.userID].password=== req.body.password) {
+      res.cookie("userID", req.body.userID);
       res.redirect("/urls")
-    } else if (users[req.body.username].password !== req.body.password) {
+    } else if (users[req.body.userID].password !== req.body.password) {
       res.redirect("/login")
     }
-  } else if (users[req.body.username] !== req.body.username) {
+  } else if (users[req.body.userID] !== req.body.userID) {
     res.redirect("/register")
   }
 });
 
 // Register New User/ Create Custom ID
 app.post("/register", (req, res) => {
-  if (req.body.username === "") {
+  if (req.body.userID === "") {
     res.status(400);
     res.send('dont try me');
   } else if (req.body.password === "") {
     res.status(400);
     res.send('dont try me');
-  } else if (matchEmail(req.body.username)) {
+  } else if (matchEmail(req.body.userID)) {
       res.send('email address exists');
   } else {
     let newID = generateRandomString();
     users[newID] = {
       id : newID,
-      email : req.body.username,
+      email : req.body.userID,
       password : req.body.password,
     };
-    console.log(users);
 
     res.cookie("userID", newID);
-    // console.log(users);
     res.redirect("/urls");
   }
 });
 
 // Logout
 app.post("/logout", (req, res) => {
-  res.clearCookie("username");
+  res.clearCookie("userID");
   res.redirect("/urls")
 });
 
@@ -155,15 +154,21 @@ app.listen(PORT, () => {
 function matchEmail (email) {
   for (let id in users) {
     let user = users[id];
-    console.log(user);
-    console.log(email);
     if (user.email === email){
       return true;
     }
   }
   return false;
 }
-
+// email match function
+// function emailToCheck (email) {
+//  for (let id in users) {
+//    let userEmail = users['userID'].email;
+//    if (userEmail === userID) {
+//      return users["userID"];
+//    }
+//  }
+// }
 function generateRandomString () {
   let randomString = Math.random().toString(36).slice(-6);
     return randomString;
